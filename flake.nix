@@ -1,16 +1,27 @@
 {
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
-  };
-  outputs =
-    inputs:
-    let
-      system = "x86_64-linux";
-      pkgs = inputs.nixpkgs.legacyPackages.${system};
-    in
-    {
-      devShells.${system}.default = pkgs.mkShell {
-        packages = [ pkgs.hello ];
+    home-manager = {
+      inputs = {
+        nixpkgs = {
+          follows = "nixpkgs";
+        };
       };
+      url = "github:nix-community/home-manager";
     };
+    nixlib = {
+      url = "github:nix-community/nixpkgs.lib";
+    };
+    nixpkgs = {
+      url = "github:NixOS/nixpkgs/nixos-unstable";
+    };
+    wrench = {
+      inputs = {
+        nixpkgs = {
+          follows = "nixpkgs";
+        };
+      };
+      url = "./wrench";
+    };
+  };
+  outputs = inputs: inputs.wrench.lib.loadModules ./modules inputs;
 }
