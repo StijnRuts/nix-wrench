@@ -6,14 +6,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
-  outputs =
-    inputs:
-    let
-      pkgs = inputs.nixpkgs.legacyPackages.x86_64-linux;
-    in
-    {
-      devShells.x86_64-linux.shellB = pkgs.mkShell {
-        packages = [ pkgs.cbonsai ];
-      };
-    };
+  devShells.default = { pkgs, ... }: {
+    packages = [ pkgs.cbonsai ];
+  };
 }
