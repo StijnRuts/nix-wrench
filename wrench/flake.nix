@@ -55,6 +55,10 @@
             wrench.types.coercedToFunction (wrench.types.withMerge lib.types.attrs)
           );
 
+          "<name>" = lib.types.nullOr (
+            lib.types.attrsOf (wrench.types.coercedToFunction (wrench.types.withMerge lib.types.attrs))
+          );
+
           "<system>" = lib.types.nullOr (
             wrench.types.coercedToFunction (wrench.types.withMerge lib.types.attrs)
           );
@@ -72,6 +76,19 @@
               transform ? _pkgs: x: x,
             }:
             lib.genAttrs systems (system: transform inputs.nixpkgs.legacyPackages.${system});
+
+          "<name>" =
+            {
+              inputs,
+              transform ? x: x,
+              values,
+            }:
+            builtins.mapAttrs (
+              _: value:
+              transform (value {
+                inherit inputs;
+              })
+            ) values;
 
           "<system>" =
             {
