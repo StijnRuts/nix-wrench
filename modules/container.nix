@@ -1,4 +1,9 @@
 {
+  devShells.default = { inputs, system, ... }: {
+    packages = [
+      inputs.self.packages.${system}.container
+    ];
+  };
   nixosConfigurations.container = { inputs, ... }: {
     system = "x86_64-linux";
     modules = [

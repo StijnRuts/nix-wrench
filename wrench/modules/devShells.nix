@@ -7,6 +7,7 @@
 {
   options.devShells = lib.mkOption {
     type = wrench.types."<system>.<name>";
+    default = null;
   };
 
   config = lib.mkIf (config.devShells != null) {

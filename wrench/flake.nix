@@ -103,6 +103,7 @@
                 pkgs:
                 transform pkgs (value {
                   inherit inputs pkgs;
+                  system = pkgs.stdenv.hostPlatform.system;
                 });
             };
 
@@ -121,6 +122,7 @@
                   _: value:
                   transform pkgs (value {
                     inherit inputs pkgs;
+                    system = pkgs.stdenv.hostPlatform.system;
                   })
                 ) values;
             };
@@ -134,6 +136,7 @@
               lib.pipe path [
                 builtins.readDir
                 builtins.attrNames
+                (builtins.filter (lib.hasSuffix ".nix"))
                 (builtins.map (p: "${path}/${p}"))
               ];
 
@@ -175,6 +178,7 @@
                     value = {
                       wrench = {
                         type = "app";
+                        meta.description = "Regenerate flake.nix";
                         program = "${pkgs'.writeShellScriptBin "wrench" ''
                           cat > flake.nix << 'EOF'
                           ${flakeContents}

@@ -7,6 +7,7 @@
 {
   options.nixosConfigurations = lib.mkOption {
     type = wrench.types."<name>";
+    default = null;
   };
 
   config = lib.mkIf (config.nixosConfigurations != null) {

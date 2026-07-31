@@ -5,17 +5,17 @@
   ...
 }:
 {
-  options.checks = lib.mkOption {
+  options.packages = lib.mkOption {
     type = wrench.types."<system>.<name>";
     default = null;
   };
 
-  config = lib.mkIf (config.checks != null) {
+  config = lib.mkIf (config.packages != null) {
     outputs = inputs: {
-      checks = wrench.options."<system>.<name>" {
+      packages = wrench.options."<system>.<name>" {
         inherit (config) systems;
         inherit inputs;
-        values = config.checks;
+        values = config.packages;
       };
     };
   };

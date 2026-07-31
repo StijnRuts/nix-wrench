@@ -6,15 +6,13 @@
 }:
 {
   options.nixosModules = lib.mkOption {
-    type = wrench.types."<name>";
+    type = wrench.types.attrs;
+    default = null;
   };
 
   config = lib.mkIf (config.nixosModules != null) {
-    outputs = inputs: {
-      nixosModules = wrench.options."<name>" {
-        inherit inputs;
-        values = config.nixosModules;
-      };
+    outputs = _inputs: {
+      inherit (config) nixosModules;
     };
   };
 }

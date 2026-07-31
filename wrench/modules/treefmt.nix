@@ -5,7 +5,10 @@
   ...
 }:
 {
-  options.treefmt = lib.mkOption { type = wrench.types.fnAttrs; };
+  options.treefmt = lib.mkOption {
+    type = wrench.types.fnAttrs;
+    default = null;
+  };
 
   config = lib.mkIf (config.treefmt != null) {
     inputs = {
@@ -16,14 +19,14 @@
     };
 
     formatter =
-      { inputs, pkgs }:
+      { inputs, pkgs, ... }:
       let
         treefmt = inputs.treefmt-nix.lib.evalModule pkgs (config.treefmt { inherit inputs pkgs; });
       in
       treefmt.config.build.wrapper;
 
     checks.formatting =
-      { inputs, pkgs }:
+      { inputs, pkgs, ... }:
       let
         treefmt = inputs.treefmt-nix.lib.evalModule pkgs (config.treefmt { inherit inputs pkgs; });
       in

@@ -7,6 +7,7 @@
 {
   options.formatter = lib.mkOption {
     type = wrench.types."<system>";
+    default = null;
   };
 
   config = lib.mkIf (config.formatter != null) {
