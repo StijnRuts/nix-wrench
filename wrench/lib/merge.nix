@@ -14,12 +14,12 @@ _: rec {
     else if a == b then
       a
     else
-      builtins.throw "conflicting value at `${builtins.concatStringsSep "." name}'";
+      throw "conflicting value at `${builtins.concatStringsSep "." name}'";
 
   attrs =
     name: a: b:
     builtins.listToAttrs (
-      builtins.map (k: {
+      map (k: {
         name = k;
         value =
           if builtins.hasAttr k a && builtins.hasAttr k b then

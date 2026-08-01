@@ -1,6 +1,5 @@
-{ lib, merge }:
-rec {
-  withMerge = type: type // { merge = merge.options; };
+{ lib, wrench, ... }: rec {
+  withMerge = type: type // { merge = wrench.lib.merge.options; };
 
   coercedToFunction = type: lib.types.coercedTo type (cfg: _: cfg) (lib.types.functionTo type);
 

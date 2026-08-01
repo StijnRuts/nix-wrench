@@ -6,23 +6,11 @@
     inputs:
     let
       lib = inputs.nixpkgs.lib;
-      merge = import ./lib/merge.nix { inherit lib; };
-      types = import ./lib/types.nix { inherit lib merge; };
-      options = import ./lib/options.nix { inherit lib; };
-      loadModules = import ./lib/loadModules.nix {
-        inherit lib wrench;
-        modulesDir = ./modules;
-      };
-      wrench = {
-        inherit
-          merge
-          types
-          options
-          loadModules
-          ;
-      };
+      collect = import ./lib/collect.nix { inherit lib; };
     in
-    {
-      lib = wrench;
-    };
+    lib.fix (wrench: {
+      bolts = collect ./bolts;
+      lib = lib.mapAttrsRecursive (_path: value: (import value) { inherit lib wrench; }) (collect ./lib);
+      inherit (wrench.lib) types options;
+    });
 }
