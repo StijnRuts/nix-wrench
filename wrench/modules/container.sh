@@ -10,11 +10,14 @@ project_root="$(git rev-parse --show-toplevel 2>/dev/null || realpath .)"
 if ! incus info "$name" >/dev/null 2>&1; then
   echo "*** Create container"
   incus init "images:nixos/$version" "$name"
-  incus config set "$name" security.nesting true
+  incus config set "$name" security.nesting=true
+
+  echo "*** Configure networking"
+  incus config device add "$name" eth0 nic network=incusbr0
 
   echo "*** Mount project directory"
   incus config device add "$name" project disk \
-    source="$project_root" path=/mnt/project # shift=true
+    source="$project_root" path=/mnt/project shift=true
 fi
 
 echo "*** Start container"
