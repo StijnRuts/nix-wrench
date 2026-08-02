@@ -18,7 +18,7 @@
           follows = "nixpkgs";
         };
       };
-      url = "./wrench";
+      url = "github:StijnRuts/nix-wrench";
     };
   };
   outputs = inputs: inputs.wrench.lib.drive ./bolts.nix inputs;

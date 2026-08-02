@@ -17,7 +17,7 @@ let
   flakeTemplate = lib.generators.toPretty { } {
     inputs = modules.config.inputs // {
       wrench = {
-        url = "./wrench";
+        url = "github:StijnRuts/nix-wrench";
         inputs.nixpkgs.follows = "nixpkgs";
       };
     };
