@@ -13,10 +13,10 @@
   config = lib.mkIf (config.devShells != null) {
     outputs = inputs: {
       devShells = wrench.options."<system>.<name>" {
-        inherit (config) systems;
+        inherit (config) systems buildArgs;
         inherit inputs;
         values = config.devShells;
-        transform = pkgs: pkgs.mkShell;
+        transform = attrs: attrs.pkgs.mkShell;
       };
     };
   };

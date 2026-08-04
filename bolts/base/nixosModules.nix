@@ -11,8 +11,6 @@
   };
 
   config = lib.mkIf (config.nixosModules != null) {
-    outputs = _inputs: {
-      inherit (config) nixosModules;
-    };
+    outputs = _inputs: { inherit (config) nixosModules; };
   };
 }

@@ -13,7 +13,7 @@
   config = lib.mkIf (config.apps != null) {
     outputs = inputs: {
       apps = wrench.options."<system>.<name>" {
-        inherit (config) systems;
+        inherit (config) systems buildArgs;
         inherit inputs;
         values = config.apps;
       };

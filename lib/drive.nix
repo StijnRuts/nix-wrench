@@ -1,8 +1,4 @@
-{
-  lib,
-  wrench,
-  ...
-}:
+{ lib, wrench, ... }:
 bolts: inputs:
 let
   modules = lib.evalModules {
@@ -31,20 +27,21 @@ let
         flakeTemplate;
 
   extra = {
-    apps = wrench.lib.options.forEachSystem {
-      inherit (modules.config) systems;
+    apps = wrench.lib.options."<system>" {
+      inherit (modules.config) systems buildArgs;
       inherit inputs;
-      transform = pkgs: {
+      transform = args: value: {
         drive = {
           type = "app";
           meta.description = "Regenerate flake.nix";
-          program = "${pkgs.writeShellScriptBin "drive" ''
+          program = "${args.pkgs.writeShellScriptBin "drive" ''
             cat > flake.nix << 'EOF'
-            ${flakeContents}
+            ${value}
             EOF
           ''}/bin/drive";
         };
       };
+      value = _: flakeContents;
     };
   };
 in

@@ -1,5 +1,4 @@
-{ lib, ... }:
-{
+{ lib, wrench, ... }: {
   options = {
     systems = lib.mkOption {
       type = lib.types.listOf lib.types.str;
@@ -9,6 +8,10 @@
         "aarch64-linux"
         "aarch64-darwin"
       ];
+    };
+    buildArgs = lib.mkOption {
+      type = wrench.types.withMerge (lib.types.functionTo lib.types.attrs);
+      default = _args: { };
     };
   };
 }

@@ -14,8 +14,8 @@
     outputs = inputs: {
       nixosConfigurations = wrench.options."<name>" {
         inherit inputs;
-        transform = inputs.nixpkgs.lib.nixosSystem;
         values = config.nixosConfigurations;
+        transform = inputs.nixpkgs.lib.nixosSystem;
       };
     };
   };

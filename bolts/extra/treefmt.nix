@@ -18,18 +18,11 @@
       };
     };
 
-    formatter =
-      { inputs, pkgs, ... }:
-      let
-        treefmt = inputs.treefmt-nix.lib.evalModule pkgs (config.treefmt { inherit inputs pkgs; });
-      in
-      treefmt.config.build.wrapper;
+    buildArgs = args: {
+      treefmt = args.inputs.treefmt-nix.lib.evalModule args.pkgs (config.treefmt args);
+    };
 
-    checks.formatting =
-      { inputs, pkgs, ... }:
-      let
-        treefmt = inputs.treefmt-nix.lib.evalModule pkgs (config.treefmt { inherit inputs pkgs; });
-      in
-      treefmt.config.build.check inputs.self;
+    formatter = args: args.treefmt.config.build.wrapper;
+    checks.formatting = args: args.treefmt.config.build.check args.inputs.self;
   };
 }
