@@ -23,7 +23,7 @@
     lib.genAttrs systems (
       system:
       let
-        args = lib.fix (args: buildArgs args // { inherit inputs system; });
+        args = lib.fix (args: { inherit inputs system; } // buildArgs args);
       in
       transform args (value args)
     );
@@ -39,7 +39,7 @@
     lib.genAttrs systems (
       system:
       let
-        args = lib.fix (args: buildArgs args // { inherit inputs system; });
+        args = lib.fix (args: { inherit inputs system; } // buildArgs args);
       in
       builtins.mapAttrs (_: value: transform args (value args)) values
     );
