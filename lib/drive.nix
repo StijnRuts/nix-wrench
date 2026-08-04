@@ -31,28 +31,21 @@ let
         flakeTemplate;
 
   extra = {
-    apps = builtins.listToAttrs (
-      map (
-        system:
-        let
-          pkgs = inputs.nixpkgs.legacyPackages.${system};
-        in
-        {
-          name = system;
-          value = {
-            drive = {
-              type = "app";
-              meta.description = "Regenerate flake.nix";
-              program = "${pkgs.writeShellScriptBin "drive" ''
-                cat > flake.nix << 'EOF'
-                ${flakeContents}
-                EOF
-              ''}/bin/drive";
-            };
-          };
-        }
-      ) modules.config.systems
-    );
+    apps = wrench.lib.options.forEachSystem {
+      inherit (modules.config) systems;
+      inherit inputs;
+      transform = pkgs: {
+        drive = {
+          type = "app";
+          meta.description = "Regenerate flake.nix";
+          program = "${pkgs.writeShellScriptBin "drive" ''
+            cat > flake.nix << 'EOF'
+            ${flakeContents}
+            EOF
+          ''}/bin/drive";
+        };
+      };
+    };
   };
 in
 lib.recursiveUpdate (modules.config.outputs inputs) extra
