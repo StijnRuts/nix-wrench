@@ -10,10 +10,12 @@ let
     specialArgs = { inherit wrench; };
   };
 
+  isWrenchRepo = lib.hasPrefix (toString inputs.wrench.outPath) (toString bolts);
+
   flakeTemplate = lib.generators.toPretty { } {
     inputs = modules.config.inputs // {
       wrench = {
-        url = "github:StijnRuts/nix-wrench";
+        url = if isWrenchRepo then "../.." else "github:StijnRuts/nix-wrench";
         inputs.nixpkgs.follows = "nixpkgs";
       };
     };
