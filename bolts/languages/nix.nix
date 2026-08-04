@@ -1,5 +1,6 @@
 {
-  devShells.default = { pkgs, ... }: { packages = [ pkgs.nixd ]; };
+  packages.nix-lsp = { pkgs, ... }: pkgs.nixd;
+
   treefmt = {
     programs = {
       nixfmt.enable = true;
