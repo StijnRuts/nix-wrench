@@ -1,21 +1,28 @@
-{ config, lib, ... }: {
+{
+  config,
+  lib,
+  wrench,
+  ...
+}:
+{
   options.processes = lib.mkOption {
-    type = lib.types.attrs;
+    type = wrench.types.fnAttrs;
     default = null;
   };
 
   config = lib.mkIf (config.processes != null) {
     packages.processes =
-      { pkgs, ... }:
-      pkgs.writeShellApplication {
+      args:
+      let
+        processes = config.processes args;
+      in
+      args.pkgs.writeShellApplication {
         name = "processes";
         meta.mainProgram = "processes";
-        runtimeInputs = with pkgs; [
-          process-compose
-        ];
+        runtimeInputs = with args.pkgs; [ process-compose ];
         text = ''
-          process-compose up --config ${
-            pkgs.writeText "config" (lib.generators.toYAML { } { inherit (config) processes; })
+          process-compose up --keep-project --config ${
+            args.pkgs.writeText "config" (lib.generators.toYAML { } { inherit processes; })
           }
         '';
       };

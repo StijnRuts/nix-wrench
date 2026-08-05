@@ -1,6 +1,7 @@
 wrench: [
   wrench.bolts.base
   wrench.bolts.extra.container
+  wrench.bolts.extra.process-compose
   wrench.bolts.extra.treefmt
   wrench.bolts.languages.bash
   wrench.bolts.languages.css
