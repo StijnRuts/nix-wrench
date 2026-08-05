@@ -1,44 +1,51 @@
 { config, lib, ... }: {
   options.containers = lib.mkOption {
     type = lib.types.attrsOf (
-      lib.types.submodule {
-        options = {
-          version = lib.mkOption {
-            type = lib.types.str;
-            default = config.nixpkgs.main;
-          };
-          autostart = lib.mkOption {
-            type = lib.types.bool;
-            default = true;
-          };
-          projectMount = lib.mkOption {
-            type = lib.types.submodule {
-              options.target = lib.mkOption {
-                type = lib.types.str;
-                default = "/mnt/project";
-              };
-              options.shift = lib.mkOption {
-                type = lib.types.bool;
-                default = true;
-              };
+      lib.types.submodule (
+        { name, ... }:
+        {
+          options = {
+            version = lib.mkOption {
+              type = lib.types.str;
+              default = config.nixpkgs.main;
             };
-            default = { };
-          };
-          mounts = lib.mkOption {
-            type = lib.types.attrsOf (
-              lib.types.submodule {
-                options.source = lib.mkOption { type = lib.types.str; };
-                options.target = lib.mkOption { type = lib.types.str; };
+            nixosConfig = lib.mkOption {
+              type = lib.types.str;
+              default = name;
+            };
+            autostart = lib.mkOption {
+              type = lib.types.bool;
+              default = true;
+            };
+            projectMount = lib.mkOption {
+              type = lib.types.submodule {
+                options.target = lib.mkOption {
+                  type = lib.types.str;
+                  default = "/mnt/project";
+                };
                 options.shift = lib.mkOption {
                   type = lib.types.bool;
                   default = true;
                 };
-              }
-            );
-            default = { };
+              };
+              default = { };
+            };
+            mounts = lib.mkOption {
+              type = lib.types.attrsOf (
+                lib.types.submodule {
+                  options.source = lib.mkOption { type = lib.types.str; };
+                  options.target = lib.mkOption { type = lib.types.str; };
+                  options.shift = lib.mkOption {
+                    type = lib.types.bool;
+                    default = true;
+                  };
+                }
+              );
+              default = { };
+            };
           };
-        };
-      }
+        }
+      )
     );
     default = { };
   };
@@ -50,6 +57,7 @@
         name = "container-setup";
         meta.mainProgram = "container-setup";
         runtimeInputs = with pkgs; [
+          coreutils
           git
           incus
           jq
@@ -63,6 +71,7 @@
         name = "container-watch";
         meta.mainProgram = "container-watch";
         runtimeInputs = with pkgs; [
+          coreutils
           git
           incus
           watchexec
@@ -88,7 +97,7 @@
         name: cfg:
         let
           fullName = "${config.project.name}-${name}";
-          nixosConfig = name;
+          nixosConfig = cfg.nixosConfig;
           setup = args.inputs.self.packages.${args.system}.container-setup;
           watch = args.inputs.self.packages.${args.system}.container-watch;
           mounts = args.pkgs.writeText "mounts.json" (builtins.toJSON cfg.mounts);
@@ -114,8 +123,8 @@
       system.stateVersion = config.nixpkgs.main;
     };
 
-    nixosModules.container_host = _: {
+    # nixosModules.container_host = _: {
       # TODO
-    };
+    # };
   };
 }

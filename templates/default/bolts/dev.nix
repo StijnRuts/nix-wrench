@@ -2,9 +2,8 @@
   nixosConfigurations.dev = { inputs, ... }: {
     system = "x86_64-linux";
     modules = [
-      inputs.wrench.nixosModules.container_guest
+      inputs.self.nixosModules.container_guest
       inputs.self.nixosModules.hello
-
     ];
   };
 

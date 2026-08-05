@@ -7,6 +7,12 @@ config="${3:?Usage: $0 <version> <name> <config_name> <project_mount_target> [mo
 project_mount_target="${4:?Usage: $0 <version> <name> <config_name> <project_mount_target> [mounts_json]}"
 mounts_json="${5:-/dev/null}"
 
+mounts_keys() {
+  if [ -r "$mounts_json" ] && [ "$mounts_json" != "/dev/null" ]; then
+    jq -r 'keys[]' "$mounts_json"
+  fi
+}
+
 project_root="$(git rev-parse --show-toplevel 2>/dev/null || realpath .)"
 
 container_status() {
@@ -38,7 +44,7 @@ if ! incus info "$name" >/dev/null 2>&1; then
 
   echo "*** Create mount parent directories"
   create_parent_dir "$project_mount_target"
-  for key in $(jq -r 'keys[]' "$mounts_json"); do
+  for key in $(mounts_keys); do
     target=$(jq -r --arg key "$key" '.[$key].target' "$mounts_json")
     create_parent_dir "$target"
   done
@@ -47,7 +53,7 @@ if ! incus info "$name" >/dev/null 2>&1; then
   add_mount project "$project_root" "$project_mount_target" true
 
   echo "*** Mount extra directories"
-  for key in $(jq -r 'keys[]' "$mounts_json"); do
+  for key in $(mounts_keys); do
     source=$(jq -r --arg key "$key" '.[$key].source' "$mounts_json")
     target=$(jq -r --arg key "$key" '.[$key].target' "$mounts_json")
     shift=$(jq -r --arg key "$key" '.[$key].shift' "$mounts_json")
