@@ -2,7 +2,7 @@
   nixosConfigurations.staging = { inputs, ... }: {
     system = "x86_64-linux";
     modules = [
-      inputs.self.nixosModules.container_guest
+      inputs.self.nixosModules.container-guest-staging
       inputs.self.nixosModules.hello
     ];
   };

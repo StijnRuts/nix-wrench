@@ -117,11 +117,17 @@
         }
       ) config.containers;
 
-    nixosModules.container_guest = _: {
-      boot.isContainer = true;
-      networking.useDHCP = true;
-      system.stateVersion = config.nixpkgs.main;
-    };
+    nixosModules = lib.concatMapAttrs (
+      name: _cfg:
+      {
+        "container-guest-${name}" = {
+          boot.isContainer = true;
+          networking.useDHCP = true;
+          networking.hostName = "${config.project.name}-${name}";
+          system.stateVersion = config.nixpkgs.main;
+        };
+      }
+    ) config.containers;
 
     # nixosModules.container_host = _: {
       # TODO
