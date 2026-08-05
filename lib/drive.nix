@@ -1,12 +1,19 @@
 { lib, wrench, ... }:
 bolts: inputs:
 let
+  load =
+    x:
+    if builtins.isAttrs x then
+      builtins.concatLists (lib.mapAttrsToList (_key: load) x)
+    else if builtins.isList x then
+      builtins.concatLists (map load x)
+    else if builtins.isPath x then
+      if lib.pathIsDirectory x then load (wrench.lib.collect x) else [ x ]
+    else
+      throw "Can not load type ${builtins.typeOf x} ${toString x}";
+
   modules = lib.evalModules {
-    modules = builtins.concatLists (
-      map (p: lib.mapAttrsToListRecursive (_keys: path: path) (wrench.lib.collect p)) (
-        (import bolts) wrench
-      )
-    );
+    modules = load ((import bolts) wrench);
     specialArgs = { inherit wrench; };
   };
 
