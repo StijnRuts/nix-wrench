@@ -21,6 +21,11 @@ container_status() {
 
 add_mount() {
   local key="$1" source="$2" target="$3" shift="$4"
+  case "$source" in
+    ~/*) source="$HOME${source#~}" ;;
+    ~) source="$HOME" ;;
+  esac
+  source=$(realpath -m "$source")
   if ! incus config device show "$name" "$key" >/dev/null 2>&1; then
     incus config device add "$name" "$key" disk \
       source="$source" path="$target" shift="$shift"
