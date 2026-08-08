@@ -3,7 +3,7 @@
 
   treefmt = { pkgs, ... }: {
     settings.formatter = {
-      stylelint = {
+      stylelint-css = {
         command = "${lib.getExe pkgs.stylelint}";
         options = [ "--fix" ];
         includes = [ "*.css" ];

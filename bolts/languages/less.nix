@@ -5,7 +5,7 @@
 
   treefmt = { pkgs, ... }: {
     settings.formatter = {
-      stylelint = {
+      stylelint-less = {
         command = "${lib.getExe pkgs.stylelint}";
         options = [ "--fix" ];
         includes = [ "*.less" ];
